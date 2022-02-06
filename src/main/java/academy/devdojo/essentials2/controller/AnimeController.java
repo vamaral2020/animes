@@ -7,6 +7,8 @@ import academy.devdojo.essentials2.requests.AnimePostRequestBody;
 import academy.devdojo.essentials2.requests.AnimePutRequestBody;
 import academy.devdojo.essentials2.service.AnimeService;
 import lombok.Builder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +31,10 @@ public class AnimeController {
 	private final AnimeService animeService;
 
 	@GetMapping
-	public ResponseEntity<List<Anime>> list(){
+	public ResponseEntity<Page<Anime>> list(Pageable pageable){
 
 		log.info(dateUtil.formaLocalDatimeToDatabaseStyle(LocalDateTime.now()));
-		return ResponseEntity.ok(animeService.listAll());
+		return ResponseEntity.ok(animeService.listAll(pageable));
 	}
 
 	@GetMapping(path = "/{id}")
@@ -49,7 +51,7 @@ public class AnimeController {
 		return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
 
 	}
-	@DeleteMapping
+	@DeleteMapping(path = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable long id){
 		animeService.delete(id);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);

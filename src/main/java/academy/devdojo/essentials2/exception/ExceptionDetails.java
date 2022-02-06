@@ -13,6 +13,6 @@ public class ExceptionDetails {
     protected int status;
     protected String details;
     protected String developerMessage;
-    protected LocalDateTime timesTamp;
+    protected LocalDateTime timestamp;
 
 }
