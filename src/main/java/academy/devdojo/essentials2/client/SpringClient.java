@@ -3,9 +3,7 @@ package academy.devdojo.essentials2.client;
 import academy.devdojo.essentials2.domain.Anime;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -37,14 +35,36 @@ public class SpringClient {
 //        Anime animeSaved = new RestTemplate().postForObject("http://localhost:8080/animes", kingidon, Anime.class);
 //        log.info(animeSaved);
 
-        Anime samuraiChamplo = Anime.builder().name("Samurai Champlo").build();
-        ResponseEntity<Anime> samuraiChamploSaved = new RestTemplate().exchange("http://localhost:8080/animes",
+        Anime anime = Anime.builder().name("curirin").build();
+        ResponseEntity<Anime> animeSaved = new RestTemplate().exchange("http://localhost:8080/animes",
                 HttpMethod.POST,
-                new HttpEntity<>(samuraiChamplo),
+                new HttpEntity<>(anime, createJsonHeaders()),
                 Anime.class);
 
-        log.info("saved {} ",samuraiChamploSaved);
+        log.info("saved anime {} ",animeSaved);
 
 
+        Anime animeToUpdated = animeSaved.getBody();
+        animeToUpdated.setName("curirin 2");
+
+        ResponseEntity<Void> curirinToUpdated = new RestTemplate().exchange("http://localhost:8080/animes",
+                HttpMethod.PUT,
+                new HttpEntity<>(animeToUpdated, createJsonHeaders()),
+                Void.class);
+        log.info("saved anime {} ",curirinToUpdated);
+
+        ResponseEntity<Void> curirinToDeleted = new RestTemplate().exchange("http://localhost:8080/animes/{id}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                3);
+        log.info("saved anime {} ",curirinToDeleted);
+
+    }
+
+    private static HttpHeaders createJsonHeaders(){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpHeaders;
     }
 }
